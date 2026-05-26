@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>젠더 가치관 유형 테스트</title>
+    <style>
+        body { 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; 
+            background: #f8fafd; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh;
+            color: #333333;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #game-container { 
+            width: 100%; 
+            max-width: 480px; 
+            box-sizing: border-box; 
+            padding: 24px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e2e8f0;
+            height: 6px;
+            border-radius: 3px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #0288d1;
+            width: 25%;
+            transition: width 0.4s ease;
+        }
+        .progress-text {
+            font-size: 13px;
+            color: #718096;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .quiz-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px 24px;
+            box-shadow: 0 10px 25px rgba(2, 136, 209, 0.05);
+            border: 1px solid #eef2f6;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .question-text { 
+            font-size: 19px; 
+            font-weight: 700; 
+            line-height: 1.6; 
+            margin-bottom: 35px; 
+            word-break: keep-all;
+            color: #1a202c;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+
+        .radio-label { 
+            display: block; 
+            background: #ffffff; 
+            padding: 18px 20px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 16px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            font-size: 15px; 
+            line-height: 1.5; 
+            text-align: left;
+            position: relative;
+        }
+        
+        .radio-label:active {
+            transform: scale(0.98);
+        }
+
+        input[type="radio"] { display: none; }
+        
+        input[type="radio"]:checked + .radio-label { 
+            background: #f0f9ff; 
+            border-color: #0288d1; 
+            color: #0288d1; 
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.1);
+        }
+
+        .essay-container { 
+            margin-top: 10px; 
+            background: #fdfdfd; 
+            padding: 18px; 
+            border-radius: 16px; 
+            border: 1px dashed #cbd5e0; 
+        }
+        .essay-label { 
+            display: block; 
+            font-size: 13px; 
+            font-weight: 700; 
+            margin-bottom: 10px; 
+            color: #4a5568; 
+        }
+        .essay-input { 
+            width: 100%; 
+            height: 75px; 
+            padding: 12px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 10px; 
+            resize: none; 
+            box-sizing: border-box; 
+            font-family: inherit; 
+            font-size: 14px;
+            background: #ffffff;
+        }
+        .essay-input:focus {
+            outline: none;
+            border-color: #0288d1;
+        }
+        .essay-hint { 
+            font-size: 11px; 
+            color: #a0aec0; 
+            margin-top: 6px; 
+            display: block; 
+            text-align: right;
+        }
+        
+        .btn-next { 
+            display: block; 
+            width: 100%; 
+            padding: 16px; 
+            margin-top: 24px; 
+            background: #0288d1; 
+            color: #ffffff; 
+            border: none; 
+            border-radius: 16px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            box-shadow: 0 6px 20px rgba(2, 136, 209, 0.25);
+            transition: all 0.2s ease;
+        }
+        .btn-next:active { 
+            background: #01579b; 
+            transform: scale(0.98);
+        }
+        
+        #result { display: none; text-align: center; }
+        .result-title { font-size: 24px; font-weight: 800; color: #1a202c; margin-bottom: 24px; }
+        
+        .final-type-card { 
+            background: #ffffff; 
+            border: 1px solid #eef2f6; 
+            padding: 0 0 30px 0; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(2, 136, 209, 0.08);
+            overflow: hidden;
+        }
+        
+        .result-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 25px;
+        }
+
+        .result-contents-box {
+            padding: 0 24px;
+        }
+
+        .type-name { color: #0288d1; font-size: 21px; font-weight: 800; margin-top: 0; margin-bottom: 15px; word-break: keep-all; }
+        .divider { border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0; }
+        .type-desc { font-size: 15px; line-height: 1.7; color: #4a5568; text-align: justify; margin: 0; word-break: keep-all; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="quiz">
+        <div class="progress-text" id="progress-txt">질문 1 / 4</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="quiz-card">
+            <div class="question-text" id="question">질문을 불러오는 중입니다...</div>
+            <div class="options-group" id="options"></div>
+        </div>
+        
+        <div class="essay-container">
+            <label class="essay-label" id="essay-title" for="essay-reply">💬 [생각 기술]</label>
+            <textarea class="essay-input" id="essay-reply" placeholder="자유롭게 의견을 적어주세요 (건너뛰기 가능)"></textarea>
+            <span class="essay-hint">* 입력하지 않아도 결과에 영향을 주지 않습니다.</span>
+        </div>
+        
+        <button class="btn-next" onclick="nextQuestion()">다음 문항으로 ➔</button>
+    </div>
+
+    <div id="result">
+        <div class="result-title">테스트 분석 결과</div>
+        <div class="final-type-card">
+            <img src="" id="result-image" class="result-img" alt="Result Illustration">
+            <div class="result-contents-box">
+                <h2 class="type-name" id="result-type">유형 이름</h2>
+                <div class="divider"></div>
+                <p class="type-desc" id="result-desc"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            q: "경찰·소방 공무원 채용 시, 여성과 남성의 체력 시험 기준을 다르게 적용하는 것에 대해 어떻게 생각하십니까?",
+            a: [
+                "[결과·능력 중심] 현장 대응력과 국민의 안전이 직결된 만큼, 성별과 관계없이 동일한 절대적 체력 기준을 적용해야 한다.",
+                "[기회·환경 중심] 신체적 차이를 인정해야 하며, 직무에 필요한 최소한의 기준을 충족한다면 성별 비율의 균형을 맞추는 것이 필요하다."
+            ],
+            axis: ["E", "F"], 
+            essayPrompt: "내가 생각하는 공정한 채용 기준이란 무엇인가요?"
+        },
+        {
+            q: "최근 예능이나 광고에서 특정 성별을 비하하거나 고정관념을 조장한다는 논란이 자주 일어납니다. 이에 대한 당신의 시선은?",
+            a: [
+                "[표현과 자율 중시] 인터넷 여론이 과도하게 검열하고 예민하게 반응하여, 창작의 자유와 일상의 재미를 위축시키고 있다.",
+                "[사회적 책임 중시] 무의식적인 혐오와 편견을 확산시킬 수 있으므로, 미디어가 더 엄격한 젠더 감수성을 가져야 한다."
+            ],
+            axis: ["E", "F"],
+            essayPrompt: "미디어 속 젠더 논란을 볼 때 어떤 느낌이 드시나요?"
+        },
+        {
+            q: "대학 내 생리공결제, 여성 전용 휴게실 등 특정 성별을 위한 복지 제도가 역차별이라는 주장에 대해 어떻게 생각하십니까?",
+            a: [
+                "[형평성 중심] 특정 성별만을 위한 제도는 갈등을 유발하므로, 모두가 혜택을 누릴 수 있는 보편적 복지로 전환되어야 한다.",
+                "[필요성 중심] 신체적 특성이나 사회적 약자에 대한 배려 차원에서 꼭 필요한 제도이며, 부족한 부분을 보완해 가야 한다."
+            ],
+            axis: ["E", "F"],
+            essayPrompt: "캠퍼스 내 성별 복지 제도가 공정해지려면 어떻게 해야 할까요?"
+        },
+        {
+            q: "기업이나 공공기관에서 여성 임원 비율이나 남성 육아휴직 비율을 강제로 맞추는 '할당제'에 대한 당신의 생각은?",
+            a: [
+                "[시장 효율 중심] 인위적인 할당은 능력 있는 사람에 대한 역차별이 될 수 있으므로, 자유 경쟁에 맡겨야 한다.",
+                "[구조 개선 중심] 오랜 유리천장과 사회적 관행을 깨기 위해서는 법적·제도적인 강제 장치가 일시적으로라도 필요하다."
+            ],
+            axis: ["E", "F"],
+            essayPrompt: "취업 시장에서 가장 시급하게 해결해야 할 젠더 문제는 무엇일까요?"
+        }
+    ];
+
+    let currentIdx = 0;
+    let userSelections = []; 
+    let userEssays = [];     
+
+    function loadQuestion() {
+        if (currentIdx >= questions.length) {
+            showFinalResult();
+            return;
+        }
+        
+        const qData = questions[currentIdx];
+        
+        document.getElementById('progress-txt').innerText = `질문 ${currentIdx + 1} / ${questions.length}`;
+        document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / questions.length) * 100}%`;
+        
+        document.getElementById('question').innerHTML = qData.q;
+        document.getElementById('essay-title').innerText = `💬 [생각 기술] ${qData.essayPrompt}`;
+        document.getElementById('essay-reply').value = "";
+        
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        
+        qData.a.forEach((text, i) => {
+            const letter = (i === 0) ? 'A' : 'B';
+            const axisType = qData.axis[i];
+            
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <input type="radio" id="opt-${i}" name="quiz-opt" value="${axisType}">
+                <label for="opt-${i}" class="radio-label"><strong>${letter}</strong> ㆍ ${text}</label>
+            `;
+            optionsDiv.appendChild(container);
+        });
+    }
+
+    function nextQuestion() {
+        const selectedRadio = document.querySelector('input[name="quiz-opt"]:checked');
+        if (!selectedRadio) {
+            alert("답안을 선택해주세요!");
+            return;
+        }
+        
+        const essayText = document.getElementById('essay-reply').value.trim();
+        
+        userSelections.push(selectedRadio.value);
+        userEssays.push(essayText ? essayText : "(의견 없음)"); 
+        
+        currentIdx++;
+        loadQuestion();
+    }
+
+    function showFinalResult() {
+        document.getElementById('quiz').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+        
+        const countE = userSelections.filter(val => val === 'E').length;
+        const countF = userSelections.filter(val => val === 'F').length;
+        
+        let finalType = "";
+        let typeName = "";
+        let descriptionStr = "";
+        let imgSrc = ""; 
+        
+        if (countE >= 3) {
+            finalType = "ED"; 
+        } else if (countF >= 3) {
+            finalType = "FD";
+        } else {
+            finalType = "EM";
+        }
+
+        // 변경하신 파일명 구조 가이드 대입 (예: ed, em, fd, fm)
+        // 만약 실제 지정한 파일명이 다르면 아래 문자열 값만 살짝 수정해 주시면 됩니다.
+        if (finalType === "ED") {
+            typeName = "[ED형] 기계적 평등을 사수하는 '논리적 법관'";
+            descriptionStr = "규칙의 동일성과 절차적 공정성을 절대적인 가치로 믿습니다. 사회적 규칙에서의 '역차별'과 '불공정'에 대해 가장 명확하고 예리한 목소리를 내는 유형입니다.";
+            imgSrc = "img/ed.png"; 
+        } else if (finalType === "EM") {
+            typeName = "[EM형] 현실적 대안을 찾는 '합리적 조율자'";
+            descriptionStr = "조건은 동일해야 공정하다고 생각하지만 갈등의 소모성을 경계합니다. 무작정 비난하기보다 합리적인 대안을 통해 갈등을 현실적으로 해결하고 싶어 합니다.";
+            imgSrc = "img/em.png"; 
+        } else if (finalType === "FD") {
+            typeName = "[FD형] 구조적 모순을 지적하는 '젠더 개혁가'";
+            descriptionStr = "사회에 존재하는 유리천장이나 구조적 불평등을 날카롭게 인지합니다. 단순히 규칙만 맞추는 것은 진짜 공정이 아니며 실질적인 약자 배려가 필요하다고 주장합니다.";
+            imgSrc = "img/fd.png"; 
+        } else if (finalType === "FM") {
+            typeName = "[FM형] 마음을 이어주는 '공감적 연대자'";
+            descriptionStr = "갈등으로 상처받는 구성원들의 심리에 주목합니다. 젠더 갈등을 이기고 지는 싸움이 아닌 이해 부족으로 보며, 소통과 공감을 통해 유대감을 회복하는 것을 중요하게 여깁니다.";
+            imgSrc = "img/fm.png"; 
+        }
+
+        document.getElementById('result-image').src = imgSrc;
+        document.getElementById('result-type').innerText = typeName;
+        document.getElementById('result-desc').innerText = descriptionStr;
+        
+        sendDataToGoogleSheets(finalType, typeName);
+    }
+
+    function sendDataToGoogleSheets(typeCode, typeFullName) {
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwV7bCzl_Lr_hHCLjcRxelRnqiePHhFaCkkZGGSo7RTkbrHC1Sb2bnH0c2TMOQTVCo1/exec';
+        
+        const formData = new URLSearchParams();
+        formData.append('type', typeCode);
+        formData.append('typeName', typeFullName);
+        formData.append('essay_q1', userEssays[0]);
+        formData.append('essay_q2', userEssays[1]);
+        formData.append('essay_q3', userEssays[2]);
+        formData.append('essay_q4', userEssays[3]);
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        })
+        .then(() => console.log('데이터 전송 완료'))
+        .catch((error) => console.error('전송 에러:', error));
+    }
+
+    window.onload = loadQuestion;
+</script>
+
+</body>
+</html>
